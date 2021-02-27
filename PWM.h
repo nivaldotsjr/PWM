@@ -13,15 +13,15 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+#pragma warning disable 750 
 int define_prescale(void);
-void inicia_PWM1(long freq);
+void init_PWM1(long freq);
 void PWM1_set_duty(unsigned int duty_cycle_porcentagem);
-void fim_PWM1(void);
+void end_PWM1(void);
 
-void inicia_PWM2(long freq);
+void init_PWM2(long freq);
 void PWM2_set_duty(unsigned int duty_cycle_porcentagem);
-void fim_PWM2(void);
+void end_PWM2(void);
 #ifdef	__cplusplus
 }
 #endif

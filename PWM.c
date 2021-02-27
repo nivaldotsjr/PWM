@@ -11,7 +11,7 @@
 #include "config.h"
 //******************************************************************************
 int Prescale_TMR2;
-long frequency; 
+long frequency,frequency2; 
 //******************************************************************************
 int define_prescale(void)
 {
@@ -25,7 +25,7 @@ int define_prescale(void)
  return pre_scale;
 }
 //******************************************************************************
-void inii_PWM1(long freq)
+void init_PWM1(long freq)
 {
    unsigned int temp; 
    frequency = freq;
@@ -77,16 +77,18 @@ void PWM1_set_duty(unsigned int duty_cycle_porcentagem)
  unsigned int duty;
  
  if(duty_cycle_porcentagem > 100)
-     duty = (unsigned int)((_XTAL_FREQ)/(frequencia*Prescale_TMR2));
+     duty = (unsigned int)((_XTAL_FREQ)/(frequency*Prescale_TMR2));
  else
-     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequencia*Prescale_TMR2)));
+     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequency*Prescale_TMR2)));
    
-     CCP1X =  (duty & 2); // 10
-     CCP1Y =  duty & 1;   // 01
-     CCPR1L = duty >> 2; // LSB
+     CCP1X =  (__bit)(duty & 0x02); // 10
+     CCP1Y =  (duty & 1);   // 01
+     CCPR1L = (__bit)(duty >> 2); // LSB
+     
+     
 }
 //******************************************************************************
-void fim_PWM1(void)
+void end_PWM1(void)
 {
  //  0000 = Capture/Compare/PWM disabled (resets CCPx module)
    CCP1CON = 0; // Turn CCP module off 
@@ -94,10 +96,10 @@ void fim_PWM1(void)
    RC2 = 0;  
 }
 //******************************************************************************
-void inicia_PWM2(long freq)
+void init_PWM2(long freq2)
 {
     unsigned int temp; 
-   frequencia = freq;
+   frequency2 = freq2;
    Prescale_TMR2 = define_prescale();
    // CCP2 -> RC1   
    // CCP2CON - > ? ? CCPxX CCPxY CCPxM3 CCPxM2 CCPxM1 CCPxM0
@@ -106,7 +108,7 @@ void inicia_PWM2(long freq)
    //11xx = PWM mode
  
    CCP2CON = 0b00001100;  //11xx = PWM mode
-   temp = (unsigned int)(((_XTAL_FREQ)/(4.0*freq*Prescale_TMR2)) - 1.0);
+   temp = (unsigned int)(((_XTAL_FREQ)/(4.0*freq2*Prescale_TMR2)) - 1.0);
    if (temp > 255)
         PR2 = 255; 
    else
@@ -146,16 +148,16 @@ void PWM2_set_duty(unsigned int duty_cycle_porcentagem)
  unsigned int duty;
  
  if(duty_cycle_porcentagem > 100)
-     duty = (unsigned int)((_XTAL_FREQ)/(frequencia*Prescale_TMR2));
+     duty = (unsigned int)((_XTAL_FREQ)/(frequency2*Prescale_TMR2));
  else
-     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequencia*Prescale_TMR2)));
+     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequency2*Prescale_TMR2)));
    
-     CCP2X =  (duty & 2); // 10
-     CCP2Y =  duty & 1;   // 01
-     CCPR2L = duty >> 2; // LSB
+     CCP2X =  (__bit)(duty & 2); // 10
+     CCP2Y =  (duty & 1);   // 01
+     CCPR2L = (__bit)(duty >> 2); // LSB
 }
 //******************************************************************************
-void fim_PWM2(void)
+void end_PWM2(void)
 {
 //  0000 = Capture/Compare/PWM disabled (resets CCPx module)
   CCP2CON = 0; // Turn CCP module off 
