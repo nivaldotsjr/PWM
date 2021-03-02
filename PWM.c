@@ -11,14 +11,14 @@
 #include "config.h"
 //******************************************************************************
 int Prescale_TMR2;
-long frequency,frequency2; 
+long freq_1,freq_2; 
 //******************************************************************************
 int define_prescale(void)
 {
  int pre_scale;
-    if  (frequency<= 1500)
+    if  (freq_1<= 1500)
         pre_scale = 16;
-    else if ((frequency< 6000) && (frequency< 10000))
+    else if ((freq_1< 6000) && (freq_1< 10000))
         pre_scale = 4;
     else
         pre_scale = 1;
@@ -28,7 +28,7 @@ int define_prescale(void)
 void init_PWM1(long freq)
 {
    unsigned int temp; 
-   frequency = freq;
+   freq_1 = freq;
    Prescale_TMR2 = define_prescale();
    // CCP1 -> RC2   
    // CCP1CON - > ? ? CCPxX CCPxY CCPxM3 CCPxM2 CCPxM1 CCPxM0
@@ -77,13 +77,13 @@ void PWM1_set_duty(unsigned int duty_cycle_porcentagem)
  unsigned int duty;
  
  if(duty_cycle_porcentagem > 100)
-     duty = (unsigned int)((_XTAL_FREQ)/(frequency*Prescale_TMR2));
+     duty = (unsigned int)((_XTAL_FREQ)/(freq_1*Prescale_TMR2));
  else
-     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequency*Prescale_TMR2)));
+     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(freq_1*Prescale_TMR2)));
    
-     CCP1X =  (__bit)(duty & 0x02); // 10
+     CCP1X =  (duty & 0x02); // 10
      CCP1Y =  (duty & 1);   // 01
-     CCPR1L = (__bit)(duty >> 2); // LSB
+     CCPR1L = (duty >> 2); // LSB
      
      
 }
@@ -99,7 +99,7 @@ void end_PWM1(void)
 void init_PWM2(long freq2)
 {
     unsigned int temp; 
-   frequency2 = freq2;
+   freq_2 = freq2;
    Prescale_TMR2 = define_prescale();
    // CCP2 -> RC1   
    // CCP2CON - > ? ? CCPxX CCPxY CCPxM3 CCPxM2 CCPxM1 CCPxM0
@@ -148,13 +148,13 @@ void PWM2_set_duty(unsigned int duty_cycle_porcentagem)
  unsigned int duty;
  
  if(duty_cycle_porcentagem > 100)
-     duty = (unsigned int)((_XTAL_FREQ)/(frequency2*Prescale_TMR2));
+     duty = (unsigned int)((_XTAL_FREQ)/(freq_2*Prescale_TMR2));
  else
-     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(frequency2*Prescale_TMR2)));
+     duty = (unsigned int)(((float)duty_cycle_porcentagem*1023.0/100.0/1023.0)*((_XTAL_FREQ)/(freq_2*Prescale_TMR2)));
    
-     CCP2X =  (__bit)(duty & 2); // 10
+     CCP2X =  (duty & 2); // 10
      CCP2Y =  (duty & 1);   // 01
-     CCPR2L = (__bit)(duty >> 2); // LSB
+     CCPR2L = (duty >> 2); // LSB
 }
 //******************************************************************************
 void end_PWM2(void)

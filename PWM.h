@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 #pragma warning disable 750 
+#pragma warning disable 21 
 int define_prescale(void);
 void init_PWM1(long freq);
 void PWM1_set_duty(unsigned int duty_cycle_porcentagem);
